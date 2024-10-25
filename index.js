@@ -3,7 +3,7 @@ require('dotenv').config();
 const app = express();
 const routes = require('./routes');
 
-const PORT = process.env.PORTNO;
+const PORT = process.env.PORTNO || 5000;
 
 app.use(routes);
 
