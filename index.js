@@ -18,7 +18,7 @@ app.use(routes);
 
 async function startServer() {
     console.log('starting server');
-    db = await connectToDb(`api-assist-${config.API_ID}`, config.DB_URL);
+    db = await connectToDb(`api-crud-${config.API_ID}`, config.DB_URL);
     app.listen(PORT, () => {
         console.log('listening on port '+ PORT);
     })    
