@@ -1,12 +1,12 @@
 const express = require('express');
-require('dotenv').config();
 const app = express();
 const routes = require('./routes');
 const connectToDb = require('./utils/db-connection');
+const config = require('./config');
 
 let db;
 
-const PORT = process.env.PORTNO || 5555;
+const PORT = config.PORT
 
 app.use((req, res, next) => {
     console.log('attaching db object');
@@ -18,7 +18,7 @@ app.use(routes);
 
 async function startServer() {
     console.log('starting server');
-    db = await connectToDb();
+    db = await connectToDb(`api-assist-${config.API_ID}`, config.DB_URL);
     app.listen(PORT, () => {
         console.log('listening on port '+ PORT);
     })    

@@ -1,8 +1,6 @@
 const { MongoClient } = require('mongodb');
 
-module.exports = async function connectToDb() {
-    const dbUrl = process.env.DB_URL;
-    const dbName = `api-assist-${process.env.APP_ID}`;
+module.exports = async function connectToDb(dbName, dbUrl) {
     console.log('connecting to db '+dbName)
     const client = new MongoClient(dbUrl);
     const connection = await client.connect();
