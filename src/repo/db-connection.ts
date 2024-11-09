@@ -1,6 +1,6 @@
-const { MongoClient } = require('mongodb');
+import { MongoClient } from "mongodb";
 
-module.exports = async function connectToDb(dbName, dbUrl) {
+export default async function connectToDb(dbName: string, dbUrl: string) {
     console.log('connecting to db '+dbName)
     const client = new MongoClient(dbUrl);
     const connection = await client.connect();
