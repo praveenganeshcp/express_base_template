@@ -1,7 +1,6 @@
-import { Db, MongoServerError, ObjectId } from "mongodb";
+import { Db, MongoServerError } from "mongodb";
 import {
   CRUDActionResponse,
-  CRUDEngineHttpMethods,
   PlaceholderDataSource,
   RequestDataValidation,
 } from "../core/types";
@@ -15,12 +14,8 @@ import { RequestDataValidatorFacadeService } from "../services/request-data-vali
 import { ParamsParserService } from "../services/params-parser.service";
 
 export interface CoreEngineCRUDUsecaseInput {
-  url: string;
-  placeholderDataSouce: Omit<PlaceholderDataSource, "crudSteps" | "authUser">;
-  applicationId: ObjectId;
-  method: CRUDEngineHttpMethods;
-  token?: string;
-  matchedEndpoint: any;
+  placeholderDataSouce: Omit<PlaceholderDataSource, "crudSteps">;
+  handlerLogic: { crud: any, response: any, validations: any };
 }
 
 @Service()
@@ -31,7 +26,7 @@ export class CoreEngineCRUDUsecase
     VariableValuePopulaterService,
   );
 
-  private readonly dbConnection: Db = Container.get(DATABASE);
+  private readonly db: Db = Container.get(DATABASE);
 
   private readonly crudActionExecutorUsecase: CRUDActionExecutorUsecase =
     Container.get(CRUDActionExecutorUsecase);
@@ -44,41 +39,25 @@ export class CoreEngineCRUDUsecase
     input: CoreEngineCRUDUsecaseInput,
   ): Promise<CRUDActionResponse> {
     const {
-      url,
       placeholderDataSouce: requestPlaceholderSource,
-      applicationId,
-      token,
-      matchedEndpoint,
+      handlerLogic,
     } = input;
 
     const placeholderDataSouce: PlaceholderDataSource = {
       ...requestPlaceholderSource,
       crudSteps: [],
-      authUser: null,
     };
 
-    if (!matchedEndpoint) {
-      throw new Error("Endpoint not found for the URL:" + url);
-    }
-
-    const { endpoint, params } = matchedEndpoint;
-
-    const db: Db = Container.get(DATABASE);
-
-    if (endpoint.isAuthenticated) {
-      placeholderDataSouce.authUser = null;
-    }
-
-    placeholderDataSouce.pathParams = this.paramsParserService.parse(params);
+    placeholderDataSouce.pathParams = this.paramsParserService.parse(placeholderDataSouce.pathParams as Record<string, string>);
     placeholderDataSouce.queryParams = this.paramsParserService.parse(
       placeholderDataSouce.queryParams as Record<string, string>,
     );
 
-    const { crud, response, validations, useCloudCode } = endpoint;
+    const { crud, response, validations } = handlerLogic;
 
     try {
       await this.requestDataValidatorService.validate({
-        db,
+        db: this.db,
         requestData: placeholderDataSouce,
         validations: this.variableValuePopulater.replaceVariables(
           validations,
@@ -93,7 +72,7 @@ export class CoreEngineCRUDUsecase
             crudSteps: stepsResponse,
           });
         let currentStepResponse = await this.crudActionExecutorUsecase.execute({
-          db,
+          db: this.db,
           actionDef: {
             collectionName: action.collectionName,
             payload: payloadPlaceholdersPopulatedWithValues as Document,
