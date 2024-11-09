@@ -1,7 +1,7 @@
-import { Db } from 'mongodb';
-import { FindActionPayload } from '../core/types';
-import { Service } from 'typedi';
-import { Usecase } from '@commons/types';
+import { Db } from "mongodb";
+import { FindActionPayload } from "../core/types";
+import { Service } from "typedi";
+import { Usecase } from "@commons/types";
 
 interface CoreEngineFindAllActionUsecaseInput {
   query: FindActionPayload;

@@ -1,16 +1,15 @@
-import { Service } from 'typedi';
-import { PlaceholderDataSource } from '../core/types';
-import { VariableValueResolver } from './variable-value-resolver';
+import { Service } from "typedi";
+import { PlaceholderDataSource } from "../core/types";
+import { VariableValueResolver } from "./variable-value-resolver";
 
 @Service()
 export class VariableValuePopulaterService {
-
   private readonly variableValueResolver: VariableValueResolver =
     new VariableValueResolver();
 
   public replaceVariables(
     payloadWithPlaceHolderOrResolverValue: unknown,
-    input: PlaceholderDataSource
+    input: PlaceholderDataSource,
   ): unknown {
     if (
       payloadWithPlaceHolderOrResolverValue === null ||
@@ -24,15 +23,14 @@ export class VariableValuePopulaterService {
       payloadWithPlaceHolderOrResolverValue.forEach((payloadArrayElement) => {
         const processedArrayEle = this.replaceVariables(
           payloadArrayElement,
-          input
+          input,
         );
         replacedVariablesInArr.push(processedArrayEle);
       });
       return replacedVariablesInArr;
     }
     // handle object
-    else if (typeof payloadWithPlaceHolderOrResolverValue === 'object') {
-      
+    else if (typeof payloadWithPlaceHolderOrResolverValue === "object") {
       const replacedVariablesInObject: Record<string, unknown> = {};
       Object.keys(payloadWithPlaceHolderOrResolverValue ?? {}).forEach(
         (key) => {
@@ -41,22 +39,22 @@ export class VariableValuePopulaterService {
           )?.[key];
           replacedVariablesInObject[key] = this.replaceVariables(
             valueAtObjectKey,
-            input
+            input,
           );
-        }
+        },
       );
       return replacedVariablesInObject;
     }
 
     const primitiveValue = payloadWithPlaceHolderOrResolverValue;
     if (
-      typeof primitiveValue === 'string' &&
-      primitiveValue.startsWith('${') &&
-      primitiveValue.endsWith('}')
+      typeof primitiveValue === "string" &&
+      primitiveValue.startsWith("${") &&
+      primitiveValue.endsWith("}")
     ) {
       const replacedValue = this.variableValueResolver.resolve(
         primitiveValue,
-        input
+        input,
       );
       return replacedValue;
     }

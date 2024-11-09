@@ -1,44 +1,54 @@
-import { Db, MongoServerError, ObjectId } from 'mongodb';
-import { CRUDActionResponse, CRUDEngineHttpMethods, PlaceholderDataSource, RequestDataValidation } from '../core/types';
-import Container, { Service } from 'typedi';
-import { Usecase } from '@commons/types';
-import { VariableValuePopulaterService } from '../services/variable-value-populater';
-import { DATABASE } from '@commons/tokens';
-import { CoreEngineProcessingException } from '../core/exceptions';
-import { CRUDActionExecutorUsecase } from './crud-action-executor.usecase';
-import { RequestDataValidatorFacadeService } from '../services/request-data-validator-facade.service';
-import { ParamsParserService } from '../services/params-parser.service';
+import { Db, MongoServerError, ObjectId } from "mongodb";
+import {
+  CRUDActionResponse,
+  CRUDEngineHttpMethods,
+  PlaceholderDataSource,
+  RequestDataValidation,
+} from "../core/types";
+import Container, { Service } from "typedi";
+import { Usecase } from "@commons/types";
+import { VariableValuePopulaterService } from "../services/variable-value-populater";
+import { DATABASE } from "@commons/tokens";
+import { CoreEngineProcessingException } from "../core/exceptions";
+import { CRUDActionExecutorUsecase } from "./crud-action-executor.usecase";
+import { RequestDataValidatorFacadeService } from "../services/request-data-validator-facade.service";
+import { ParamsParserService } from "../services/params-parser.service";
 
 export interface CoreEngineCRUDUsecaseInput {
   url: string;
-  placeholderDataSouce: Omit<PlaceholderDataSource, 'crudSteps' | 'authUser'>;
+  placeholderDataSouce: Omit<PlaceholderDataSource, "crudSteps" | "authUser">;
   applicationId: ObjectId;
   method: CRUDEngineHttpMethods;
   token?: string;
-  matchedEndpoint: any
+  matchedEndpoint: any;
 }
 
 @Service()
 export class CoreEngineCRUDUsecase
   implements Usecase<CoreEngineCRUDUsecaseInput, CRUDActionResponse>
 {
-  private readonly variableValuePopulater = Container.get(VariableValuePopulaterService);
+  private readonly variableValuePopulater = Container.get(
+    VariableValuePopulaterService,
+  );
 
   private readonly dbConnection: Db = Container.get(DATABASE);
 
-    private readonly crudActionExecutorUsecase: CRUDActionExecutorUsecase = Container.get(CRUDActionExecutorUsecase);
-    private readonly requestDataValidatorService: RequestDataValidatorFacadeService = Container.get(RequestDataValidatorFacadeService);
-    private readonly paramsParserService: ParamsParserService = Container.get(ParamsParserService);
+  private readonly crudActionExecutorUsecase: CRUDActionExecutorUsecase =
+    Container.get(CRUDActionExecutorUsecase);
+  private readonly requestDataValidatorService: RequestDataValidatorFacadeService =
+    Container.get(RequestDataValidatorFacadeService);
+  private readonly paramsParserService: ParamsParserService =
+    Container.get(ParamsParserService);
 
   async execute(
-    input: CoreEngineCRUDUsecaseInput
+    input: CoreEngineCRUDUsecaseInput,
   ): Promise<CRUDActionResponse> {
     const {
       url,
       placeholderDataSouce: requestPlaceholderSource,
       applicationId,
       token,
-      matchedEndpoint
+      matchedEndpoint,
     } = input;
 
     const placeholderDataSouce: PlaceholderDataSource = {
@@ -48,7 +58,7 @@ export class CoreEngineCRUDUsecase
     };
 
     if (!matchedEndpoint) {
-      throw new Error('Endpoint not found for the URL:' + url);
+      throw new Error("Endpoint not found for the URL:" + url);
     }
 
     const { endpoint, params } = matchedEndpoint;
@@ -56,12 +66,12 @@ export class CoreEngineCRUDUsecase
     const db: Db = Container.get(DATABASE);
 
     if (endpoint.isAuthenticated) {
-      placeholderDataSouce.authUser = null
+      placeholderDataSouce.authUser = null;
     }
 
     placeholderDataSouce.pathParams = this.paramsParserService.parse(params);
     placeholderDataSouce.queryParams = this.paramsParserService.parse(
-      placeholderDataSouce.queryParams as Record<string, string>
+      placeholderDataSouce.queryParams as Record<string, string>,
     );
 
     const { crud, response, validations, useCloudCode } = endpoint;
@@ -72,7 +82,7 @@ export class CoreEngineCRUDUsecase
         requestData: placeholderDataSouce,
         validations: this.variableValuePopulater.replaceVariables(
           validations,
-          placeholderDataSouce
+          placeholderDataSouce,
         ) as RequestDataValidation,
       });
       let stepsResponse: Document[] = [];

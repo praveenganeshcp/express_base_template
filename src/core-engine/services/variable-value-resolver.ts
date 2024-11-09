@@ -1,12 +1,18 @@
-import { Document, ObjectId } from 'mongodb';
-import { VariableTypeResolverService } from './variable-type-resolver';
-import { CRUDSupportedVariablesInfo, CRUDSystemVariables, PlaceholderDataSource } from '../core/types';
-import { CoreEngineInvalidVariablePathException, CoreEngineUnSupportedVariableTypeException } from '../core/exceptions';
-import { Service } from 'typedi';
+import { Document, ObjectId } from "mongodb";
+import { VariableTypeResolverService } from "./variable-type-resolver";
+import {
+  CRUDSupportedVariablesInfo,
+  CRUDSystemVariables,
+  PlaceholderDataSource,
+} from "../core/types";
+import {
+  CoreEngineInvalidVariablePathException,
+  CoreEngineUnSupportedVariableTypeException,
+} from "../core/exceptions";
+import { Service } from "typedi";
 
 @Service()
 export class VariableValueResolver {
-
   private readonly variableTypeResolverService: VariableTypeResolverService =
     new VariableTypeResolverService();
 
@@ -15,9 +21,9 @@ export class VariableValueResolver {
       CRUDSupportedVariablesInfo.RequestBody.prefix.length;
     const valueKey: string = value.slice(
       variableBodyPrefixLen,
-      value.length - 1
+      value.length - 1,
     );
-    const valuePathSeperatedByPeriods = valueKey.split('.').slice(1);
+    const valuePathSeperatedByPeriods = valueKey.split(".").slice(1);
     let valueObject = { ...inputBody };
     for (const key of valuePathSeperatedByPeriods) {
       if (!valueObject[key]) {
@@ -33,9 +39,9 @@ export class VariableValueResolver {
       CRUDSupportedVariablesInfo.Authuser.prefix.length;
     const valueKey: string = value.slice(
       variableAuthUserPrefixLen,
-      value.length - 1
+      value.length - 1,
     );
-    const valuePathSeperatedByPeriods = valueKey.split('.').slice(1);
+    const valuePathSeperatedByPeriods = valueKey.split(".").slice(1);
     let valueObject = { ...inputBody };
     for (const key of valuePathSeperatedByPeriods) {
       if (!valueObject[key]) {
@@ -51,7 +57,7 @@ export class VariableValueResolver {
       CRUDSupportedVariablesInfo.RequestPathParams.prefix.length;
     const valueKey: string = value.slice(
       variableParamPrefixLen,
-      value.length - 1
+      value.length - 1,
     );
     return inputParams[valueKey];
   }
@@ -61,7 +67,7 @@ export class VariableValueResolver {
       CRUDSupportedVariablesInfo.RequestQueryParams.prefix.length;
     const valueKey: string = value.slice(
       variableParamPrefixLen,
-      value.length - 1
+      value.length - 1,
     );
     return inputParams[valueKey];
   }
@@ -71,7 +77,7 @@ export class VariableValueResolver {
       CRUDSupportedVariablesInfo.System.prefix.length;
     const systemVariableName: string = value.slice(
       systemVariablePrefixLen,
-      value.length - 1
+      value.length - 1,
     );
     if (systemVariableName === CRUDSystemVariables.UTCDateTime) {
       return new Date();
@@ -91,9 +97,9 @@ export class VariableValueResolver {
       CRUDSupportedVariablesInfo.Steps.prefix.length;
     const valueKey: string = value.slice(
       stepVariablePrefixLen,
-      value.length - 1
+      value.length - 1,
     );
-    const valuePathSeperatedByPeriods = valueKey.split('.').slice(1);
+    const valuePathSeperatedByPeriods = valueKey.split(".").slice(1);
     let stepsInputObject: Document = stepsInput.slice();
     for (const key of valuePathSeperatedByPeriods) {
       if (!stepsInputObject[key as unknown as number]) {
@@ -107,36 +113,36 @@ export class VariableValueResolver {
   public resolve(value: string, inputData: PlaceholderDataSource) {
     const type = this.variableTypeResolverService.resolve(value);
     switch (type) {
-      case 'RequestBody': {
+      case "RequestBody": {
         const result = this.resolveRequestBodyVariable(
           value,
-          inputData.requestBody
+          inputData.requestBody,
         );
         if (
           this.variableTypeResolverService.resolve(
-            result as unknown as string
-          ) === 'ObjectId'
+            result as unknown as string,
+          ) === "ObjectId"
         ) {
           return this.resolveObjectIdVariable(result as unknown as string);
         }
         return result;
       }
-      case 'ObjectId': {
+      case "ObjectId": {
         return this.resolveObjectIdVariable(value);
       }
-      case 'Steps': {
+      case "Steps": {
         return this.resolveStepVariable(value, inputData.crudSteps);
       }
-      case 'System': {
+      case "System": {
         return this.resolveSystemVariable(value);
       }
-      case 'RequestPathParams': {
+      case "RequestPathParams": {
         return this.resolveRequestParamsVariable(value, inputData.pathParams);
       }
-      case 'RequestQueryParams': {
+      case "RequestQueryParams": {
         return this.resolveRequestQueryVariable(value, inputData.queryParams);
       }
-      case 'Authuser': {
+      case "Authuser": {
         return this.resolveAuthUserVariable(value, inputData.authUser ?? {});
       }
       default: {

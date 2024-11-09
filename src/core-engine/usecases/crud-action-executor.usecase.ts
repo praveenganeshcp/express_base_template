@@ -1,16 +1,16 @@
-import Container, { Service } from 'typedi';
+import Container, { Service } from "typedi";
 import {
   ALLOWED_DB_OPERATIONS,
   CRUDActionDefinition,
   CRUDActionResponse,
   FindActionPayload,
-} from '../core/types';
-import { Db } from 'mongodb';
-import { CanBeNull, Usecase } from '@commons/types';
-import { CoreEngineInsertActionUsecase } from './insert-one.usecase';
-import { CoreEngineFindOneActionUsecase } from './find-one.usecase';
-import { CoreEngineFindAllActionUsecase } from './find-all.usecase';
-import { CoreEngineUnSupportedActionException } from '../core/exceptions';
+} from "../core/types";
+import { Db } from "mongodb";
+import { CanBeNull, Usecase } from "@commons/types";
+import { CoreEngineInsertActionUsecase } from "./insert-one.usecase";
+import { CoreEngineFindOneActionUsecase } from "./find-one.usecase";
+import { CoreEngineFindAllActionUsecase } from "./find-all.usecase";
+import { CoreEngineUnSupportedActionException } from "../core/exceptions";
 
 interface CRUDActionExecutorUsecaseInput {
   db: Db;
@@ -22,13 +22,15 @@ export class CRUDActionExecutorUsecase
   implements
     Usecase<CRUDActionExecutorUsecaseInput, CanBeNull<CRUDActionResponse>>
 {
-
-    private readonly insertActionUsecase: CoreEngineInsertActionUsecase = Container.get(CoreEngineInsertActionUsecase);
-    private readonly findOneActionUsecase: CoreEngineFindOneActionUsecase = Container.get(CoreEngineFindOneActionUsecase);
-    private readonly findAllActionUsecase: CoreEngineFindAllActionUsecase = Container.get(CoreEngineFindAllActionUsecase)
+  private readonly insertActionUsecase: CoreEngineInsertActionUsecase =
+    Container.get(CoreEngineInsertActionUsecase);
+  private readonly findOneActionUsecase: CoreEngineFindOneActionUsecase =
+    Container.get(CoreEngineFindOneActionUsecase);
+  private readonly findAllActionUsecase: CoreEngineFindAllActionUsecase =
+    Container.get(CoreEngineFindAllActionUsecase);
 
   async execute(
-    data: CRUDActionExecutorUsecaseInput
+    data: CRUDActionExecutorUsecaseInput,
   ): Promise<CanBeNull<CRUDActionResponse>> {
     const { db, actionDef } = data;
     switch (actionDef.operation) {

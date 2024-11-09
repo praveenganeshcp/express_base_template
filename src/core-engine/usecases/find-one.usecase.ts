@@ -1,7 +1,7 @@
-import { Db } from 'mongodb';
-import { FindActionPayload } from '../core/types';
-import { CanBeNull, Usecase } from '@commons/types';
-import { Service } from 'typedi';
+import { Db } from "mongodb";
+import { FindActionPayload } from "../core/types";
+import { CanBeNull, Usecase } from "@commons/types";
+import { Service } from "typedi";
 
 interface CoreEngineFindOneActionUsecaseInput {
   query: FindActionPayload;
@@ -14,7 +14,7 @@ export class CoreEngineFindOneActionUsecase
   implements Usecase<CoreEngineFindOneActionUsecaseInput, CanBeNull<Object>>
 {
   execute(
-    input: CoreEngineFindOneActionUsecaseInput
+    input: CoreEngineFindOneActionUsecaseInput,
   ): Promise<CanBeNull<Object>> {
     return input.db
       .collection(input.collectionName)

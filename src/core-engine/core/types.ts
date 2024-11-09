@@ -1,15 +1,15 @@
-import { Filter, Document, FindOptions, UpdateFilter, ObjectId } from 'mongodb';
+import { Filter, Document, FindOptions, UpdateFilter, ObjectId } from "mongodb";
 import { CanBeNull } from "@commons/types";
 
 export enum ALLOWED_DB_OPERATIONS {
-  findOne = 'findOne',
-  find = 'find',
-  insertOne = 'insertOne',
-  insertMany = 'insertMany',
-  updateOne = 'updateOne',
-  updateMany = 'updateMany',
-  deleteOne = 'deleteOne',
-  deleteMany = 'deleteMany',
+  findOne = "findOne",
+  find = "find",
+  insertOne = "insertOne",
+  insertMany = "insertMany",
+  updateOne = "updateOne",
+  updateMany = "updateMany",
+  deleteOne = "deleteOne",
+  deleteMany = "deleteMany",
 }
 
 export interface FindActionPayload {
@@ -41,11 +41,11 @@ export interface PlaceholderDataSource {
 }
 
 export type RequestDataFieldSyncValidators =
-  | 'string-type'
-  | 'numeric-type'
-  | 'boolean-type';
+  | "string-type"
+  | "numeric-type"
+  | "boolean-type";
 
-export type ParamDataTypes = 'string' | 'number' | 'boolean' | 'ObjectId';
+export type ParamDataTypes = "string" | "number" | "boolean" | "ObjectId";
 
 export interface RequestDataSyncValidation {
   name: RequestDataFieldSyncValidators;
@@ -69,7 +69,7 @@ export interface RequestDataFieldValidation {
   };
 }
 
-export type CRUDValidationOperators = 'eq' | 'ne';
+export type CRUDValidationOperators = "eq" | "ne";
 
 export interface RequestDataValidation {
   body?: RequestDataFieldValidation;
@@ -93,51 +93,51 @@ export interface CRUDActionDefinition {
 
 export interface CRUDActionResponse extends Document {}
 
-export type CRUDEngineHttpMethods = 'GET' | 'POST' | 'PATCH' | 'DELETE';
+export type CRUDEngineHttpMethods = "GET" | "POST" | "PATCH" | "DELETE";
 
 export type CRUDSupportedVariablesTypes =
-  | 'ObjectId'
-  | 'System'
-  | 'RequestBody'
-  | 'RequestPathParams'
-  | 'RequestQueryParams'
-  | 'Steps'
-  | 'Authuser';
+  | "ObjectId"
+  | "System"
+  | "RequestBody"
+  | "RequestPathParams"
+  | "RequestQueryParams"
+  | "Steps"
+  | "Authuser";
 
 export const CRUDSupportedVariablesInfo: Record<
   CRUDSupportedVariablesTypes,
   { prefix: string; suffix: string }
 > = {
   ObjectId: {
-    prefix: 'ObjectId(',
-    suffix: ')',
+    prefix: "ObjectId(",
+    suffix: ")",
   },
   System: {
-    prefix: '${System.var.',
-    suffix: '}',
+    prefix: "${System.var.",
+    suffix: "}",
   },
   RequestBody: {
-    prefix: '${Request.body',
-    suffix: '}',
+    prefix: "${Request.body",
+    suffix: "}",
   },
   Steps: {
-    prefix: '${Steps',
-    suffix: '}',
+    prefix: "${Steps",
+    suffix: "}",
   },
   RequestPathParams: {
-    prefix: '${Request.params.',
-    suffix: '}',
+    prefix: "${Request.params.",
+    suffix: "}",
   },
   RequestQueryParams: {
-    prefix: '${Request.query.',
-    suffix: '}',
+    prefix: "${Request.query.",
+    suffix: "}",
   },
   Authuser: {
-    prefix: '${Authuser',
-    suffix: '}',
+    prefix: "${Authuser",
+    suffix: "}",
   },
 };
 
 export enum CRUDSystemVariables {
-  UTCDateTime = 'UTCDateTime',
+  UTCDateTime = "UTCDateTime",
 }

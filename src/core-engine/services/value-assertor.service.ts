@@ -1,18 +1,17 @@
-import { Service } from 'typedi';
-import { CRUDValidationOperators } from '../core/types';
+import { Service } from "typedi";
+import { CRUDValidationOperators } from "../core/types";
 
 @Service()
 export class ValueAssertorService {
-
   assert(
     value: unknown,
     expectedValue: unknown,
-    operator: CRUDValidationOperators
+    operator: CRUDValidationOperators,
   ): boolean {
     let result = false;
-    if (operator === 'eq') {
+    if (operator === "eq") {
       result = value === expectedValue;
-    } else if (operator === 'ne') {
+    } else if (operator === "ne") {
       result = value !== expectedValue;
     }
     return result;
