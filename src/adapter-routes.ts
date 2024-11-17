@@ -9,16 +9,32 @@ import Container from "typedi";
 export const adapterRouter = Router();
 
 
-adapterRouter.patch('/api/v6/migrations', async (req: Request, res: Response) => {
+adapterRouter.patch('/api/v6/database/migrations', async (req: Request, res: Response) => {
     const applyMigrationUsecase = Container.get(ApplyMigrationUsecase)
     await applyMigrationUsecase.execute();
     res.json({})
 })
 
-adapterRouter.delete('/api/v6/migrations', async (req: Request, res: Response) => {
+adapterRouter.delete('/api/v6/database/migrations', async (req: Request, res: Response) => {
     const revertMigrationUsecase = Container.get(RevertMigrationUsecase)
     await revertMigrationUsecase.execute();
     res.json({})
+})
+
+adapterRouter.get('/api/v6/database/migrations', async (req: Request, res: Response) => {
+    const coreEngineUsecase: CRUDActionExecutorUsecase = Container.get(CRUDActionExecutorUsecase);
+    const allMigrations = await coreEngineUsecase.execute({
+        db: Container.get(DATABASE),
+        actionDef: {
+            operation: ALLOWED_DB_OPERATIONS.find,
+            collectionName: "changelog",
+            payload: {
+                filter: {},
+                options: {}
+            }
+        }
+    })
+    res.json({ migrations: allMigrations })
 })
 
 adapterRouter.get('/api/v6/database/collections', async (req: Request, res: Response) => {
