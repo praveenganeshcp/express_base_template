@@ -6,10 +6,18 @@ import { router as apiBuilderRouter } from "./api-builder-routes";
 import { router as apiBuilderBuiltinRouter } from "./api-builder-builtin-routes";
 import { CONFIG } from "@commons/config";
 import { setupContainer } from "@container/setup";
+import { adapterRouter } from "./adapter-routes";
 
 const PORT = CONFIG.PORT;
 
 app.use(express.json());
+
+app.use(adapterRouter);
+
+app.use((req, res, next) => {
+  console.log(`New request: ${req.method} ${req.url}`);
+  next();
+})
 
 app.use(router);
 

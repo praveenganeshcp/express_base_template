@@ -15,6 +15,7 @@
   "dependencies": {
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
+    "migrate-mongo": "^11.0.0",
     "mongodb": "^6.10.0",
     "reflect-metadata": "^0.2.2",
     "tsconfig-paths": "^4.2.0",
@@ -23,6 +24,7 @@
   "devDependencies": {
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.7",
+    "@types/migrate-mongo": "^10.0.5",
     "@types/node": "^22.9.0",
     "concurrently": "^9.1.0",
     "nodemon": "^3.1.7",
