@@ -12,11 +12,14 @@ export class ApplyMigrationUsecase
   async execute(): Promise<void> {
     const migrationConfig = buildMigrationConfig();
     config.set(migrationConfig);
+    console.log('applying migration');
     const { db, client } = await database.connect();
+    console.log('connected to db');
     await up(db, client);
+    console.log('migration applied');
     const migrationStatus = await status(db);
     migrationStatus.forEach(({ fileName, appliedAt }) =>
-      console.log(fileName + ":" + appliedAt)
+      console.log(fileName + " : " + appliedAt)
     );
     client.close();
     console.log("db connection closed");

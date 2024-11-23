@@ -27,9 +27,9 @@ app.use(apiBuilderBuiltinRouter);
 
 async function startServer() {
   setupContainer().then(() => {
-    console.log("starting server");
+    console.log("starting server...");
     app.listen(PORT, () => {
-      console.log("listening on port " + PORT);
+      console.log("server started successfully");
     });
   });
 }

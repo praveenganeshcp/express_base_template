@@ -1,7 +1,7 @@
 import { CONFIG } from "@commons/config";
 import { DB_NAME } from "@commons/tokens";
 import { config } from "migrate-mongo";
-import path from "path";
+import { join } from "path";
 import Container from "typedi";
 
 export function buildMigrationConfig(): config.Config {
@@ -10,8 +10,8 @@ export function buildMigrationConfig(): config.Config {
         url: CONFIG.DB_URL,
         databaseName: Container.get(DB_NAME),
       },
-      migrationsDir: path.join(process.cwd(), 'src', 'migration-files'),
+      migrationsDir: join("/Users/praveenkumar/Documents/projects/cloud_code", CONFIG.API_ID, "dist", "migration-files"),
       changelogCollectionName: 'changelog',
-      migrationFileExtension: '.ts',
+      migrationFileExtension: '.js',
     };
   }
